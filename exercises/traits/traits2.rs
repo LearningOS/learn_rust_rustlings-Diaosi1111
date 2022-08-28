@@ -9,11 +9,17 @@
 //
 // No boiler plate code this time,
 // you can do this!
-
-// I AM NOT DONE
-
+// Execute `rustlings hint traits2` or use the `hint` watch subcommand for a hint.
 trait AppendBar {
     fn append_bar(self) -> Self;
+}
+
+impl AppendBar for Vec<String> {
+    fn append_bar(self) -> Self {
+        let mut  s=self.clone();
+        s.push("Bar".to_string());
+        s
+    }
 }
 
 //TODO: Add your code here

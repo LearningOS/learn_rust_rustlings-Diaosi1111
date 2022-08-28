@@ -3,6 +3,8 @@
 // Basically, this is the same as From. The main difference is that this should return a Result type
 // instead of the target type itself.
 // You can read more about it at https://doc.rust-lang.org/std/convert/trait.TryFrom.html
+// Execute `rustlings hint try_from_into` or use the `hint` watch subcommand for a hint.
+
 use std::convert::{TryFrom, TryInto};
 
 #[derive(Debug, PartialEq)]
@@ -21,14 +23,12 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
-// an array of three integers, and a slice of integers.
+// an sliceay of three integers, and a slice of integers.
 //
-// Note that the implementation for tuple and array will be checked at compile time,
+// Note that the implementation for tuple and sliceay will be checked at compile time,
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
@@ -36,13 +36,21 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        if tuple.0<0||tuple.1<0||tuple.2<0||tuple.0>u8::MAX as i16||tuple.1>u8::MAX as i16||tuple.2>u8::MAX as i16{
+            return Err(IntoColorError::IntConversion);
+        }
+        Ok(Color{red:tuple.0 as u8,green:tuple.1 as u8, blue:tuple.2 as u8})
     }
 }
 
-// Array implementation
+// sliceay implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+    fn try_from(slice: [i16; 3]) -> Result<Self, Self::Error> {
+        if slice[0]<0||slice[1]<0||slice[2]<0||slice[0]>u8::MAX as i16||slice[1]>u8::MAX as i16||slice[2]>u8::MAX as i16{
+            return Err(IntoColorError::IntConversion);
+        }
+        Ok(Color{red:slice[0] as u8,green:slice[1] as u8, blue:slice[2] as u8})
     }
 }
 
@@ -50,11 +58,18 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len()!=3{
+            return Err(IntoColorError::BadLen);
+        }
+        if slice[0]<0||slice[1]<0||slice[2]<0||slice[0]>u8::MAX as i16||slice[1]>u8::MAX as i16||slice[2]>u8::MAX as i16{
+            return Err(IntoColorError::IntConversion);
+        }
+        Ok(Color{red:slice[0] as u8,green:slice[1] as u8, blue:slice[2] as u8})
     }
 }
 
 fn main() {
-    // Use the `from` function
+    // Use the `try_from` function
     let c1 = Color::try_from((183, 65, 14));
     println!("{:?}", c1);
 
@@ -110,22 +125,22 @@ mod tests {
         );
     }
     #[test]
-    fn test_array_out_of_range_positive() {
+    fn test_sliceay_out_of_range_positive() {
         let c: Result<Color, _> = [1000, 10000, 256].try_into();
         assert_eq!(c, Err(IntoColorError::IntConversion));
     }
     #[test]
-    fn test_array_out_of_range_negative() {
+    fn test_sliceay_out_of_range_negative() {
         let c: Result<Color, _> = [-10, -256, -1].try_into();
         assert_eq!(c, Err(IntoColorError::IntConversion));
     }
     #[test]
-    fn test_array_sum() {
+    fn test_sliceay_sum() {
         let c: Result<Color, _> = [-1, 255, 255].try_into();
         assert_eq!(c, Err(IntoColorError::IntConversion));
     }
     #[test]
-    fn test_array_correct() {
+    fn test_sliceay_correct() {
         let c: Result<Color, _> = [183, 65, 14].try_into();
         assert!(c.is_ok());
         assert_eq!(
@@ -139,25 +154,25 @@ mod tests {
     }
     #[test]
     fn test_slice_out_of_range_positive() {
-        let arr = [10000, 256, 1000];
+        let slice = [10000, 256, 1000];
         assert_eq!(
-            Color::try_from(&arr[..]),
+            Color::try_from(&slice[..]),
             Err(IntoColorError::IntConversion)
         );
     }
     #[test]
     fn test_slice_out_of_range_negative() {
-        let arr = [-256, -1, -10];
+        let slice = [-256, -1, -10];
         assert_eq!(
-            Color::try_from(&arr[..]),
+            Color::try_from(&slice[..]),
             Err(IntoColorError::IntConversion)
         );
     }
     #[test]
     fn test_slice_sum() {
-        let arr = [-1, 255, 255];
+        let slice = [-1, 255, 255];
         assert_eq!(
-            Color::try_from(&arr[..]),
+            Color::try_from(&slice[..]),
             Err(IntoColorError::IntConversion)
         );
     }

@@ -1,4 +1,4 @@
-// hashmap1.rs
+// hashmaps1.rs
 // A basket of fruits in the form of a hash map needs to be defined.
 // The key represents the name of the fruit and the value represents
 // how many of that particular fruit is in the basket. You have to put
@@ -8,20 +8,22 @@
 //
 // Make me compile and pass the tests!
 //
-// Execute the command `rustlings hint hashmap1` if you need
-// hints.
+// Execute `rustlings hint hashmaps1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
 fn fruit_basket() -> HashMap<String, u32> {
-    let mut basket = // TODO: declare your hash map here.
+    let mut basket = HashMap::new();// TODO: declare your hash map here.
 
     // Two bananas are already given for you :)
     basket.insert(String::from("banana"), 2);
 
     // TODO: Put more fruits in your basket here.
+    basket.insert(String::from("milk"), 2);
+
+    basket.insert(String::from("egg"), 2);
+
 
     basket
 }
